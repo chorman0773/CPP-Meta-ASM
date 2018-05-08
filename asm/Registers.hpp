@@ -5,6 +5,8 @@ template<int val> struct register{
 	const static constexpr int value = val;
 };
 
-template<int val> struct accumulator : register<val>{};
+template<int val> struct Accumulator : register<val>{};
+
+template<int val> struct InstructionPointer : register<val> {};
 
 #endif
