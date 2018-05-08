@@ -9,7 +9,7 @@ template<int val> struct Accumulator : register<val>{};
 
 template<int val> struct InstructionPointer : register<val> {};
 
-template<bool z,bool n> struct Status : register<(z?2:0)|(n?1:0)>{
+template<bool z,bool n> struct Flags : register<(z?2:0)|(n?1:0)>{
 	const static constexpr bool zero = z;
 	const static constexpr bool negative = n;
 };
