@@ -15,9 +15,12 @@ namespace _hidden{
 template<int... stackVals> struct stack{
 	template<int val> struct push: _hidden::push<val,stack,stackVals>{};
 	struct pop: _hidden::pop<stack,stackVals>{};
+	
+	const static constexpr int array[sizeof...(stackVals)] = {stackVals};
 };
 template<> struct stack<>{
 	template<int val> struct push: _hidden::push<val,stack>{};
+	const static constexpr int array[];
 };
 
 #endif
