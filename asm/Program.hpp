@@ -41,16 +41,20 @@ template<class currInstruction> struct get_instruction<0,currInstruction>{
 };
 
 
-
-template<class... instructions> struct Program{
-  typedef executing_program<Stack<>,Accumulator<0>,Accumulator<0>,InstructionPointer<0>,Flags<false,false>,Program<instructions>> program;
+class<class Subroutine,class inAcca=Accumulator<0>,class inAccb=Accumulator<0>,class inFlags=Flags<false,false>> class Program{
+  typedef executing_program<Stack<>,Accumulator<0>,Accumulator<0>,InstructionPointer<0>,Flags<false,false>,Subroutine,Subroutine::instructionAt<0>::ins> program;
   typedef program::acca acca;
   typedef program::accb accb;
   typedef program::stack stack;
   typedef program::ip ip;
   typedef program::flags flags;
-  template<class inStack,class inAcc,class inIp,class inFlags> next: 
-    executing_program<inStack,inAcc,inIp,inFlags,Program<instructions>,get_instruction<inIp::value,instructions>>{};
+  template<class inStack,class inAcca,class inAccb,class inIp,class inFlags> next: 
+    executing_program<inStack,inAcca,inAccb,inIp,inFlags,Program<Subrountine,inAcca,inAccb,inFlags>,Subroutine::instructionAt<inIp::value>::ins>{};
 };
+
+template<class... instructions> struct Subroutine{
+  template<size_t pos> instructionAt : get_instruction<pos,instructions>{};
+};
+
 
 #endif
