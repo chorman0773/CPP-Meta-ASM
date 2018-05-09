@@ -8,15 +8,17 @@ using std::endl;
 #define TARGET 8
 
 typedef Program<
- load<a,1>,
- load<b,1>,
- push<b>,
- pop<b>,
- mul<a,b>,
- add<b,1>,
- push<b>,
- sub<b,TARGET>,
- ifn<-6>
+Subrountine<
+  load<a,1>,
+  load<b,1>,
+  push<b>,
+  pop<b>,
+  mul<a,b>,
+  add<b,1>,
+  push<b>,
+  sub<b,TARGET>,
+  ifn<-6>
+ >
 > output;
 
 int main(){
