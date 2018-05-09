@@ -2,129 +2,215 @@
 #define __Instructions_hpp_2018_05_08_16_56
 
 #include <type_traits>
+#include "Registers.hpp"
 
-template<int val> class load{
-  template<class inStack,class inAcc,class inIp,class inFlags> struct execute{
+enum Register{
+  a,b
+};
+
+template<Register r,int val> class load{
+  template<class inStack,class inAcca,class inAccb,class inIp,class inFlags> struct execute{
     typedef inStack stack;
-    typedef Accumulator<val> accumulator;
+    typedef std::conditional<r==a,Accumulator<val>,inAcca> acca;
+    typedef std::conditional<r==b,Accumulator<val>,inAccb> accb;
     typedef inIp ip;
+    typedef std::conditional<r==a,acca,accb> accumulator;
     typedef Flags<accumulator::value==0,accumulator::value<0> flags;
   };
 };
 
-template<int val> class add{
-  template<class inStack,class inAcc,class inIp,class inFlags> execute{
+template<Register r,int val> class add{
+  template<class inStack,class inAcca,class inAccb,class inIp,class inFlags> struct execute{
     typedef inStack stack;
-    typedef Accumulator<inAcc::value+val> accumulator;
+    typedef std::conditional<r==a,Accumulator<inAcca::value+val>,inAcca> acca;
+    typedef std::conditional<r==b,Accumulator<inAccb::value+val>,inAccb> accb;
     typedef InstructionPointer<inIp::value+1> ip;
+    typedef std::conditional<r==a,acca,accb> accumulator;
     typedef Flags<accumulator::value==0,accumulator::value<0> flags;
   };
 };
 
-template<class inStack,class inAcc,class inIp,class inFlags> class sub{
-  template<class inStack,class inAcc> struct execute{
+ template<Register r,int val> class sub{
+  template<class inStack,class inAcca,class inAccb,class inIp,class inFlags> struct execute{
     typedef inStack stack;
-    typedef Accumulator<inAcc::value+val> accumulator;
+    typedef std::conditional<r==a,Accumulator<inAcca::value-val>,inAcca> acca;
+    typedef std::conditional<r==b,Accumulator<inAccb::value-val>,inAccb> accb;
     typedef InstructionPointer<inIp::value+1> ip;
+    typedef std::conditional<r==a,acca,accb> accumulator;
     typedef Flags<accumulator::value==0,accumulator::value<0> flags;
   };
 };
-
-template<class inStack,class inAcc,class inIp,class inFlags> class mul{
-  template<class inStack,class inAcc> struct execute{
+ template<Register r,int val> class mul{
+  template<class inStack,class inAcca,class inAccb,class inIp,class inFlags> struct execute{
     typedef inStack stack;
-    typedef Accumulator<inAcc::value+val> accumulator;
+    typedef std::conditional<r==a,Accumulator<inAcca::value*val>,inAcca> acca;
+    typedef std::conditional<r==b,Accumulator<inAccb::value*val>,inAccb> accb;
     typedef InstructionPointer<inIp::value+1> ip;
-    typedef Flags<accumulator::value==0,accumulator::value<0> flags;
+    typedef std::conditional<r==a,acca,accb> accumulator;
+    typedef Flags<accumulator::value==0,accumulator::value<0 > flags;
   };
 };
 
-template<class inStack,class inAcc,class inIp,class inFlags> class div{
-  template<class inStack,class inAcc> struct execute{
+ template<Register r,int val> class div{
+  template<class inStack,class inAcca,class inAccb,class inIp,class inFlags> struct execute{
+    typedef std::conditional<r==a,inAcca,inAccb> inAcc;
     typedef inStack stack;
-    typedef Accumulator<inAcc::value+val> accumulator;
+    typedef Accumulator<inAcca:value/val> acca;
+    typedef Accumulator<inAcc::value%val> accb;
     typedef InstructionPointer<inIp::value+1> ip;
+    typedef std::conditional<r==a,acca,accb> accumulator;
     typedef Flags<accumulator::value==0,accumulator::value<0> flags;
   };
 };
 
-class push{
-  template<class inStack,class inAcc,class inIp,class inFlags> struct execute{
+template<Register r,Register val> class load{
+  template<class inStack,class inAcca,class inAccb,class inIp,class inFlags> struct execute{
+    typedef std::conditional<val==a,inAcca,inAccb> inAcc;
+    typedef inStack stack;
+    typedef std::conditional<r==a,Accumulator<inAcc::value>,inAcca> acca;
+    typedef std::conditional<r==b,Accumulator<inAcc::value>,inAccb> accb;
+    typedef inIp ip;
+    typedef std::conditional<r==a,acca,accb> accumulator;
+    typedef Flags<accumulator::value==0,accumulator::value<0> flags;
+  };
+};
+
+template<Register r,Register val> class add{
+  template<class inStack,class inAcca,class inAccb,class inIp,class inFlags> struct execute{
+    typedef std::conditional<val==a,inAcca,inAccb> inAcc;
+    typedef inStack stack;
+    typedef std::conditional<r==a,Accumulator<inAcca::value+inAcc::value>,inAcca> acca;
+    typedef std::conditional<r==b,Accumulator<inAccb::value+inAcc::value>,inAccb> accb;
+    typedef InstructionPointer<inIp::value+1> ip;
+    typedef std::conditional<r==a,acca,accb> accumulator;
+    typedef Flags<accumulator::value==0,accumulator::value<0> flags;
+  };
+};
+
+ template<Register r,Register val> class sub{
+  template<class inStack,class inAcca,class inAccb,class inIp,class inFlags> struct execute{
+    typedef std::conditional<val==a,inAcca,inAccb> inAcc;
+    typedef inStack stack;
+    typedef std::conditional<r==a,Accumulator<inAcca::value-inAcc::value>,inAcca> acca;
+    typedef std::conditional<r==b,Accumulator<inAccb::value-inAcc::value>,inAccb> accb;
+    typedef InstructionPointer<inIp::value+1> ip;
+    typedef std::conditional<r==a,acca,accb> accumulator;
+    typedef Flags<accumulator::value==0,accumulator::value<0> flags;
+  };
+};
+ template<Register r,Register val> class mul{
+  template<class inStack,class inAcca,class inAccb,class inIp,class inFlags> struct execute{
+    typedef std::conditional<val==a,inAcca,inAccb> inAcc;
+    typedef inStack stack;
+    typedef std::conditional<r==a,Accumulator<inAcca::value*inAcc::value>,inAcca> acca;
+    typedef std::conditional<r==b,Accumulator<inAccb::value*inAcc::value>,inAccb> accb;
+    typedef InstructionPointer<inIp::value+1> ip;
+    typedef std::conditional<r==a,acca,accb> accumulator;
+    typedef Flags<accumulator::value==0,accumulator::value<0 > flags;
+  };
+};
+
+ template<Register r,Register val> class div{
+  template<class inStack,class inAcca,class inAccb,class inIp,class inFlags> struct execute{
+    typedef std::conditional<r==a,inAcca,inAccb> dividend;
+    typedef std::conditional<val==a,inAcca,inAccb> divisor;
+    typedef inStack stack;
+    typedef Accumulator<dividend:value/divisor::value> acca;
+    typedef Accumulator<dividend::value%divisor::value> accb;
+    typedef InstructionPointer<inIp::value+1> ip;
+    typedef acca accumulator;
+    typedef Flags<accumulator::value==0,accumulator::value<0> flags;
+  };
+};
+
+template<Register r> class push{
+  template<class inStack,class inAcca,class inAccb,class inIp,class inFlags> struct execute{
+    typedef std::conditional<r==a,inAcca,inAccb> inAcc;
     typedef inStack::push<inAcc::value>::next stack;
-    typedef inAcc accumulator;
+    typedef inAcca acca;
+    typedef inAccb accb;
     typedef InstructionPointer<inIp::value+1> ip;
     typedef inFlags flags;
   };
 };
 
-class pop{
-  template<class inStack,class inAcc,class inIp,class inFlags> struct execute{
+template<Register r> class pop{
+  template<class inStack,class inAcca,class inAccb,class inIp,class inFlags> struct execute{
     typedef inStack::pop popped;
     typedef popped::next stack;
-    typedef Accumulator<popped::value> accumulator;
+    typedef std::conditional<r==a,Accumulator<inAcca::value-val>,inAcca> acca;
+    typedef std::conditional<r==b,Accumulator<inAccb::value-val>,inAccb> accb;
+    typedef std::conditional<r==a,acca,accb> accumulator;
     typedef InstructionPointer<inIp::value+1> ip;
     typedef Flags<accumulator::value==0,accumulator::value<0> flags;
   };
 };
 
 class nop{
-  template<class inStack,class inAcc,class inIp,class inFlags> struct execute{
+  template<class inStack,class inAcca,class inAccb,class inIp,class inFlags> struct execute{
     typedef inStack stack;
-    typedef inAcc accumulator;
+    typedef inAcca acca;
+    typedef inAccb accb;
     typedef InstructionPointer<inIp::value+1> ip;
     typedef inFlags flags;
   };
 };
 
 class clz{
-  template<class inStack,class inAcc,class inIp,class inFlags> struct execute{
+  template<class inStack,class inAcca,class inAccb,class inIp,class inFlags> struct execute{
     typedef inStack stack;
-    typedef inZ accumulator;
+    typedef inAcca acca;
+    typedef inAccb accb;
     typedef InstructionPointer<inIp::value+1> ip;
     typedef Flags<false,inFlags::negative> flags;
   };
 };
 
 class cln{
-  template<class inStack,class inAcc,class inIp,class inFlags> struct execute{
+  template<class inStack,class inAcca,class inAccb,class inIp,class inFlags> struct execute{
     typedef inStack stack;
-    typedef inZ accumulator;
+    typedef inAcca acca;
+    typedef inAccb accb;
     typedef InstructionPointer<inIp::value+1> ip;
     typedef Flags<inFlags::zero,false> flags;
   };
 };
 
 template<short offset> class brz{
-  template<class inStack,class inAcc,class inIp,class inFlags> struct execute{
+ template<class inStack,class inAcca,class inAccb,class inIp,class inFlags> struct execute{
     typedef inStack stack;
-    typedef inZ accumulator;
+    typedef inAcca acca;
+    typedef inAccb accb;
     typedef std::conditional<inFlags::zero,InstructionPointer<inIp::value+offset>,InstructionPointer<inIp::value+1>>::type ip;
     typedef inFlags flags;
   };
 };
 
 template<short offset> class brnz{
-  template<class inStack,class inAcc,class inIp,class inFlags> struct execute{
+  template<class inStack,class inAcca,class inAccb,class inIp,class inFlags> struct execute{
     typedef inStack stack;
-    typedef inZ accumulator;
+    typedef inAcca acca;
+    typedef inAccb accb;
     typedef std::conditional<!inFlags::zero,InstructionPointer<inIp::value+offset>,InstructionPointer<inIp::value+1>>::type ip;
     typedef inFlags flags;
   };
 };
 
 template<short offset> class brn{
-  template<class inStack,class inAcc,class inIp,class inFlags> struct execute{
+  template<class inStack,class inAcca,class inAccb,class inIp,class inFlags> struct execute{
     typedef inStack stack;
-    typedef inZ accumulator;
+    typedef inAcca acca;
+    typedef inAccb accb;
     typedef std::conditional<inFlags::negative,InstructionPointer<inIp::value+offset>,InstructionPointer<inIp::value+1>>::type ip;
     typedef inFlags flags;
   };
 };
 
 template<short offset> class brp{
-  template<class inStack,class inAcc,class inIp,class inFlags> struct execute{
+  template<class inStack,class inAcca,class inAccb,class inIp,class inFlags> struct execute{
     typedef inStack stack;
-    typedef inZ accumulator;
+    typedef inAcca acca;
+    typedef inAccb accb;
     typedef std::conditional<!inFlags::negative,InstructionPointer<inIp::value+offset>,InstructionPointer<inIp::value+1>>::type ip;
     typedef inFlags flags;
   };
