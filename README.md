@@ -15,13 +15,16 @@ An example program: Adds 3, 5, and 7, then devides by 11, then multiplies the re
 quotient. The result is transfered to the main program.
 
 	typedef Program<
-	load<a,3>,
-	add<a,5>,
-	add<a,7>,
-	div<a,11>,
-	pop<b>,
-	multiply<b,31>,
-	add<a,b>> output;
+	Subroutine<
+        load<a,3>,
+		add<a,5>,
+		add<a,7>,
+		div<a,11>,
+		pop<b>,
+	    multiply<b,31>,
+	    add<a,b>
+      >
+    > output;
 	
 	constexpr int result = output::accumulator::value;
 
