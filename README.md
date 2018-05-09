@@ -2,7 +2,13 @@
 
 This program is designed to add a Meta-Assembly language to C++ using templates.
 The language is an incomplete, Stack-based language with basic math operations and a single accumulator.
-The language does not contain working memory (outside of the stack and 1 accumulator), or branch instructions.
+The language does not contain working memory (outside of the stack and 1 accumulator). The language now has branch support,
+and support for processor flags and an instruction pointer. 
+
+In addition, the language is template based, so its easy-enough to add new instructions.
+You can add an instruction my defining a class with a single member template struct named execute with the parameters
+<class inStack,class inAcc,class inIp,class inFlags>, which provides output member typedefs stack, accumulator, ip, and flags.
+If the instruction modifies one of these, it should be updated accordingly. Otherwise the output should echo the input.
 	
 An example program: Adds 3, 5, and 7, then devides by 11, then multiplies the remainder by 31. The result is 
 transfered to the main program.
