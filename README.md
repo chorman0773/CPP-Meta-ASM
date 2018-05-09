@@ -5,8 +5,8 @@ The language is an incomplete, Stack-based language with basic math operations a
 The language does not contain working memory (outside of the stack and 1 accumulator). The language now has branch support,
 and support for processor flags and an instruction pointer. 
 
-In addition, the language is template based, so its easy-enough to add new instructions.
-You can add an instruction my defining a class with a single member template struct named execute with the parameters
+In addition, the language is template based, so its easy enough to add new instructions.
+You can add an instruction by defining a class with a single member template struct named execute with the parameters
 <class inStack,class inAcc,class inIp,class inFlags>, which provides output member typedefs stack, accumulator, ip, and flags.
 If the instruction modifies one of these, it should be updated accordingly. Otherwise the output should echo the input.
 	
