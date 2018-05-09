@@ -7,19 +7,21 @@ and support for processor flags and an instruction pointer.
 
 In addition, the language is template based, so its easy enough to add new instructions.
 You can add an instruction by defining a class with a single member template struct named execute with the parameters
-<class inStack,class inAcc,class inIp,class inFlags>, which provides output member typedefs stack, accumulator, ip, and flags.
+<class inStack,class inAcca,class inAccb,class inIp,class inFlags>, which provides output member typedefs stack, acca, accb, 
+ip, and flags.
 If the instruction modifies one of these, it should be updated accordingly. Otherwise the output should echo the input.
 	
-An example program: Adds 3, 5, and 7, then devides by 11, then multiplies the remainder by 31. The result is 
-transfered to the main program.
+An example program: Adds 3, 5, and 7, then devides by 11, then multiplies the remainder by 31 and adds to the
+quotient. The result is transfered to the main program.
 
 	typedef Program<
-	load<3>,
-	add<5>,
-	add<7>,
-	div<11>,
-	pop,
-	multiply<31>> output;
+	load<a,3>,
+	add<a,5>,
+	add<a,7>,
+	div<a,11>,
+	pop<b>,
+	multiply<b,31>,
+	add<a,b>> output;
 	
 	constexpr int result = output::accumulator::value;
 
