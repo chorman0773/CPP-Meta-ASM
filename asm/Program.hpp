@@ -4,19 +4,21 @@
 #include <asm/Register.hpp>
 #include <utils/Stack.hpp>
 
-template<class stack,class accumulator,class ip,class flags,class prg,class executingInstruction> struct executing_program{
-  typedef executingInstruction::execute<stack,accumulator> currInstruction;
-  typedef prg::next<stack,accumulator,ip,flags> nextInstruction;
+template<class stack,class acca,class accb,class ip,class flags,class prg,class executingInstruction> struct executing_program{
+  typedef executingInstruction::execute<stack,acca,accb,ip,flags> currInstruction;
+  typedef prg::next<stack,acca,accb,ip,flags> nextInstruction;
   typedef nextInstruction::stack stack;
-  typedef nextInstruction::accumulator accumulator;
+  typedef nextInstruction::acca acca;
+  typedef nextInstruction::accb accb;
   typedef nextInstruction::instructionPointer instructionPointer;
   typedef nextInstruction::flags flags;
 };
 
-template<class stack,class accumulator,class ip,class flags,class prg> struct 
-  executing_program<stack,accumulator,ip,flags,prg,void>{
+template<class stack,class acca,class accb,class ip,class flags,class prg> struct 
+  executing_program<stack,acca,accb,ip,flags,prg,void>{
   typedef stack stack;
-  typedef accumulator accumulator;
+  typedef acca acca;
+  typedef accb accb;
   typedef ip instructionPointer;
   typedef flags flags;
 };
@@ -41,8 +43,9 @@ template<class currInstruction> struct get_instruction<0,currInstruction>{
 
 
 template<class... instructions> struct Program{
-  typedef executing_program<Stack<>,Accumulator<0>,InstructionPointer<0>,Flags<false,false>,Program<instructions>> program;
-  typedef program::accumulator accumulator;
+  typedef executing_program<Stack<>,Accumulator<0>,Accumulator<0>,InstructionPointer<0>,Flags<false,false>,Program<instructions>> program;
+  typedef program::acca acca;
+  typedef program::accb accb;
   typedef program::stack stack;
   typedef program::ip ip;
   typedef program::flags flags;
