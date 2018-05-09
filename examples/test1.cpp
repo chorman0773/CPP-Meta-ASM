@@ -6,9 +6,9 @@ using std::cout;
 using std::endl;
 
 typedef Program<
-load<1>,
-push,
-mul<2>,
+load<a,1>,
+push<a>,
+mul<a,2>,
 brnz<-2>
 > output;
 
