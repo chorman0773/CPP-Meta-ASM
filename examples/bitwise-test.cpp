@@ -17,5 +17,5 @@ add<a,11>,
 add<b,1>,
 sub<b,MAX>,
 brn<-5>
->
-Accumulator<START>>
+>,
+Accumulator<SEED>>
